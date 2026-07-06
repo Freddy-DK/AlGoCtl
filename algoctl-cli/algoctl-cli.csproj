@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>algoctl</ToolCommandName>
+    <AssemblyName>algoctl</AssemblyName>
+    <PackageId>AlGoCtl</PackageId>
+    <Version>0.0.1</Version>
+    <Authors>Freddy Kristiansen</Authors>
+    <Description>CLI for controlling AL-Go for GitHub repositories</Description>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageProjectUrl>https://github.com/Freddy-DK/AlGoCtl</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Freddy-DK/AlGoCtl</RepositoryUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="../README.md" Pack="true" PackagePath="" Condition="Exists('../README.md')" />
+  </ItemGroup>
+</Project>

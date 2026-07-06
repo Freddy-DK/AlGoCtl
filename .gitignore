@@ -1,0 +1,17 @@
+# .NET build output
+algoctl-cli/bin/
+algoctl-cli/obj/
+
+# Language server cache
+*.lscache
+
+# NuGet package output
+nupkg/
+*.nupkg
+*.snupkg
+
+# Private keys
+*.pem
+
+# Visual Studio solution file
+AlGoCtl.sln
