@@ -19,14 +19,14 @@ internal static class CreateRepoCommand
                                               Short form (owner/repo) defaults to github.com;
                                               a full URL may target a GitHub Enterprise host.
                                               Default: https://github.com/Freddy-DK/AL-Go-PTE
+            --templateghuser <user>           GitHub CLI account to use for reading the
+                                              template repository. Default: the active account
+                                              on the template host, or unauthenticated if none.
             --repo <owner/repo|url>           The repository to create. Short form defaults
                                               to github.com. (required)
             --ghuser <user>                   GitHub CLI account to use for creating the
                                               repository. Default: the active account on the
                                               target host.
-            --templateghuser <user>           GitHub CLI account to use for reading the
-                                              template repository. Default: the active account
-                                              on the template host, or unauthenticated if none.
             --visibility <private|internal|public>
                                               Visibility of the new repository.
                                               Default: private
@@ -88,7 +88,7 @@ internal static class CreateRepoCommand
 
         // Resolve the token for the account that will create/push to the new repo.
         // If --ghuser was supplied, use that account; otherwise use the active account on the host.
-        var targetToken = GetGhToken(target.Host, ghUser);
+        var targetToken = RepoCommandHelpers.GetGhToken(target.Host, ghUser);
         if (targetToken is null)
         {
             if (string.IsNullOrWhiteSpace(ghUser))
@@ -98,7 +98,7 @@ internal static class CreateRepoCommand
             Console.Error.WriteLine("Make sure the account is authenticated: gh auth login");
             return 1;
         }
-        var targetLogin = ResolveLogin(target.Host, targetToken) ?? ghUser;
+        var targetLogin = RepoCommandHelpers.ResolveLogin(target.Host, targetToken) ?? ghUser;
 
         // Resolve the token for reading the template.
         // - If --templateghuser was supplied, that account is required.
@@ -107,7 +107,7 @@ internal static class CreateRepoCommand
         string? templateToken;
         if (!string.IsNullOrWhiteSpace(templateGhUser))
         {
-            templateToken = GetGhToken(template.Host, templateGhUser);
+            templateToken = RepoCommandHelpers.GetGhToken(template.Host, templateGhUser);
             if (templateToken is null)
             {
                 Console.Error.WriteLine($"Error: could not obtain a GitHub token for template user '{templateGhUser}' on '{template.Host}'.");
@@ -116,9 +116,9 @@ internal static class CreateRepoCommand
         }
         else
         {
-            templateToken = GetGhToken(template.Host, null); // active account, or null (unauthenticated)
+            templateToken = RepoCommandHelpers.GetGhToken(template.Host, null); // active account, or null (unauthenticated)
         }
-        var templateLogin = templateToken is null ? null : (ResolveLogin(template.Host, templateToken) ?? templateGhUser);
+        var templateLogin = templateToken is null ? null : (RepoCommandHelpers.ResolveLogin(template.Host, templateToken) ?? templateGhUser);
 
         Console.WriteLine("Creating repository from template:");
         Console.WriteLine($"  Template:      {template.HttpsUrl}");
@@ -128,7 +128,7 @@ internal static class CreateRepoCommand
         Console.WriteLine($"  GitHub user:   {(string.IsNullOrWhiteSpace(targetLogin) ? $"(active account on {target.Host})" : $"{targetLogin} on {target.Host}")}");
         Console.WriteLine();
 
-        if (!skipConfirm && !Confirm())
+        if (!skipConfirm && !RepoCommandHelpers.Confirm())
         {
             Console.WriteLine("Aborted.");
             return 1;
@@ -151,7 +151,7 @@ internal static class CreateRepoCommand
                 environment: createEnv);
             if (createExit != 0)
             {
-                Console.Error.WriteLine($"Error: failed to create repository:{Environment.NewLine}{Mask(createErr, targetToken)}");
+                Console.Error.WriteLine($"Error: failed to create repository:{Environment.NewLine}{RepoCommandHelpers.Mask(createErr, targetToken)}");
                 return 1;
             }
 
@@ -165,17 +165,17 @@ internal static class CreateRepoCommand
                 ["clone", "--depth", "1", templateCloneUrl, tempDir]);
             if (cloneExit != 0)
             {
-                Console.Error.WriteLine($"Error: failed to clone template:{Environment.NewLine}{Mask(cloneErr, templateToken)}");
+                Console.Error.WriteLine($"Error: failed to clone template:{Environment.NewLine}{RepoCommandHelpers.Mask(cloneErr, templateToken)}");
                 return 1;
             }
 
             // 3. Re-initialize as a fresh repository (drop template history).
             var gitDir = Path.Combine(tempDir, ".git");
-            ForceDeleteDirectory(gitDir);
+            RepoCommandHelpers.ForceDeleteDirectory(gitDir);
 
-            if (!RunGit(tempDir, ["-c", "init.defaultBranch=main", "init"], targetToken)) return 1;
-            if (!RunGit(tempDir, ["add", "-A"], targetToken)) return 1;
-            if (!RunGit(tempDir,
+            if (!RepoCommandHelpers.RunGit(tempDir, ["-c", "init.defaultBranch=main", "init"], targetToken)) return 1;
+            if (!RepoCommandHelpers.RunGit(tempDir, ["add", "-A"], targetToken)) return 1;
+            if (!RepoCommandHelpers.RunGit(tempDir,
                     ["-c", "user.name=algoctl", "-c", "user.email=algoctl@users.noreply.github.com",
                      "commit", "-m", $"Initial commit from template {template.Owner}/{template.Name}"],
                     targetToken))
@@ -184,8 +184,8 @@ internal static class CreateRepoCommand
             // 4. Push to the new repository.
             Console.WriteLine("Pushing content to the new repository...");
             var pushUrl = target.AuthenticatedUrl(targetToken);
-            if (!RunGit(tempDir, ["remote", "add", "origin", pushUrl], targetToken)) return 1;
-            if (!RunGit(tempDir, ["push", "-u", "origin", "HEAD:main"], targetToken)) return 1;
+            if (!RepoCommandHelpers.RunGit(tempDir, ["remote", "add", "origin", pushUrl], targetToken)) return 1;
+            if (!RepoCommandHelpers.RunGit(tempDir, ["push", "-u", "origin", "HEAD:main"], targetToken)) return 1;
 
             Console.WriteLine();
             Console.WriteLine($"Repository created successfully: {target.HttpsUrl}");
@@ -193,88 +193,7 @@ internal static class CreateRepoCommand
         }
         finally
         {
-            TryDeleteDirectory(tempDir);
+            RepoCommandHelpers.TryDeleteDirectory(tempDir);
         }
-    }
-
-    private static bool RunGit(string workingDirectory, string[] arguments, string? tokenToMask)
-    {
-        var (exit, _, err) = ProcessHelper.Run("git", arguments, workingDirectory);
-        if (exit != 0)
-        {
-            Console.Error.WriteLine($"Error: git {arguments[0]} failed:{Environment.NewLine}{Mask(err, tokenToMask)}");
-            return false;
-        }
-        return true;
-    }
-
-    private static bool Confirm()
-    {
-        Console.Write("Do you want to proceed? [y/N] ");
-        var answer = Console.ReadLine()?.Trim();
-        return string.Equals(answer, "y", StringComparison.OrdinalIgnoreCase)
-            || string.Equals(answer, "yes", StringComparison.OrdinalIgnoreCase);
-    }
-
-    private static string? GetGhToken(string host, string? user)
-    {
-        var arguments = new List<string> { "auth", "token", "--hostname", host };
-        if (!string.IsNullOrWhiteSpace(user))
-        {
-            arguments.Add("--user");
-            arguments.Add(user);
-        }
-
-        var (exit, stdOut, _) = ProcessHelper.Run("gh", arguments);
-        var token = stdOut.Trim();
-        return exit == 0 && !string.IsNullOrWhiteSpace(token) ? token : null;
-    }
-
-    /// <summary>Resolves the login name for the account owning the given token on a host.</summary>
-    private static string? ResolveLogin(string host, string token)
-    {
-        var env = new Dictionary<string, string>
-        {
-            ["GH_TOKEN"] = token,
-            ["GH_HOST"] = host,
-        };
-        var (exit, stdOut, _) = ProcessHelper.Run("gh", ["api", "user", "--jq", ".login"], environment: env);
-        var login = stdOut.Trim();
-        return exit == 0 && !string.IsNullOrWhiteSpace(login) ? login : null;
-    }
-
-    private static string Mask(string text, string? secret)
-    {
-        if (string.IsNullOrEmpty(secret) || string.IsNullOrEmpty(text))
-            return text;
-        return text.Replace(secret, "***");
-    }
-
-    private static void TryDeleteDirectory(string path)
-    {
-        try
-        {
-            ForceDeleteDirectory(path);
-        }
-        catch
-        {
-            // Best-effort cleanup of the temp directory.
-        }
-    }
-
-    private static void ForceDeleteDirectory(string path)
-    {
-        if (!Directory.Exists(path))
-            return;
-
-        // Git marks files under .git read-only on Windows; clear the attribute first.
-        foreach (var file in Directory.EnumerateFiles(path, "*", SearchOption.AllDirectories))
-        {
-            var attributes = File.GetAttributes(file);
-            if (attributes.HasFlag(FileAttributes.ReadOnly))
-                File.SetAttributes(file, attributes & ~FileAttributes.ReadOnly);
-        }
-
-        Directory.Delete(path, recursive: true);
     }
 }

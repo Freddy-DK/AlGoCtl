@@ -9,6 +9,7 @@ Usage:
 
 Commands:
     createrepo       Create a new repository from a template repository
+    updaterepo       Update an existing repository's AL-Go system-file workflow and run it
     --version, -v    Show the algoctl version
 """;
 
@@ -33,6 +34,11 @@ if (args.Length > 0 && (string.Equals(args[0], "--version", StringComparison.Ord
 if (args.Length > 0 && string.Equals(args[0], CreateRepoCommand.Name, StringComparison.OrdinalIgnoreCase))
 {
     return CreateRepoCommand.Run(args);
+}
+
+if (args.Length > 0 && string.Equals(args[0], UpdateRepoCommand.Name, StringComparison.OrdinalIgnoreCase))
+{
+    return UpdateRepoCommand.Run(args);
 }
 
 Console.Error.WriteLine(Help);
