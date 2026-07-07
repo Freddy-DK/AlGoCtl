@@ -1,4 +1,5 @@
 using System.Reflection;
+using AlGoCtl;
 
 const string Help = """
 AL-Go for GitHub Control CLI
@@ -7,6 +8,7 @@ Usage:
     algoctl <command> [--key "value" ...]
 
 Commands:
+    createrepo       Create a new repository from a template repository
     --version, -v    Show the algoctl version
 """;
 
@@ -26,6 +28,11 @@ if (args.Length > 0 && (string.Equals(args[0], "--version", StringComparison.Ord
     version = string.Join('.', version.Split('.').Select(s => s.TrimStart('0') is "" ? "0" : s.TrimStart('0')));
     Console.WriteLine(version);
     return 0;
+}
+
+if (args.Length > 0 && string.Equals(args[0], CreateRepoCommand.Name, StringComparison.OrdinalIgnoreCase))
+{
+    return CreateRepoCommand.Run(args);
 }
 
 Console.Error.WriteLine(Help);
