@@ -143,17 +143,18 @@ jobs:
             $version = Get-Date -Format 'yyyy.MMdd'
             $releaseBranch = "releases/v$version"
 
-            # Fail early if branch already exists
+            # Point the release branch at the current main HEAD. If it already
+            # exists (e.g. a second release on the same day), update it to main
+            # and release from it instead of failing. The revision number is
+            # auto-incremented from existing tags further below.
             $branchExists = git ls-remote --heads origin "refs/heads/$releaseBranch" 2>$null
+            git checkout -B $releaseBranch
+            git push --force origin $releaseBranch
             if ($branchExists) {
-              Write-Error "Release branch '$releaseBranch' already exists. Run the workflow with that branch name to create additional releases."
-              exit 1
+              Write-Host "Updated existing release branch: $releaseBranch"
+            } else {
+              Write-Host "Created release branch: $releaseBranch"
             }
-
-            # Create release branch
-            git checkout -b $releaseBranch
-            git push origin $releaseBranch
-            Write-Host "Created release branch: $releaseBranch"
           } else {
             # Running from a release branch — extract version from branch name
             if ($branch -notmatch '^releases/v(\d{4}\.\d{4})$') {
