@@ -41,10 +41,18 @@ internal static class UpdateRepoCommand
                                               to the workflow's includeBranches input. Wildcards
                                               are supported. Default: main
             --confirm                         Skip the interactive confirmation prompt.
+            --help, -h                        Show this help.
         """;
 
     public static int Run(string[] args)
     {
+        // --help, -h — show command help and exit.
+        if (ArgParser.HasHelpFlag(args.Skip(1)))
+        {
+            Console.WriteLine(Help);
+            return 0;
+        }
+
         var parameters = ArgParser.Parse(args.Skip(1));
 
         // --repo (required)

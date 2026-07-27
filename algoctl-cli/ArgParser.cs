@@ -6,6 +6,16 @@ namespace AlGoCtl;
 /// </summary>
 internal static class ArgParser
 {
+    /// <summary>
+    /// Returns <c>true</c> if any of the supplied tokens is a help flag
+    /// (<c>--help</c>, <c>-h</c>, or <c>-?</c>), matched case-insensitively.
+    /// </summary>
+    public static bool HasHelpFlag(IEnumerable<string> args) =>
+        args.Any(a =>
+            string.Equals(a, "--help", StringComparison.OrdinalIgnoreCase)
+            || string.Equals(a, "-h", StringComparison.OrdinalIgnoreCase)
+            || string.Equals(a, "-?", StringComparison.Ordinal));
+
     public static Dictionary<string, string> Parse(IEnumerable<string> args)
     {
         var result = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);

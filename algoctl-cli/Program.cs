@@ -11,11 +11,24 @@ Commands:
     createrepo       Create a new repository from a template repository
     updaterepo       Update an existing repository's AL-Go system-file workflow and run it
     --version, -v    Show the algoctl version
+    --help, -h       Show this help
+
+Run 'algoctl <command> --help' for command-specific help.
 """;
 
 #if NET8_0
 Console.Error.WriteLine("Warning: You are running the .NET 8 build of algoctl. .NET 10 is the preferred runtime; install .NET 10 to use the preferred build.");
 #endif
+
+// Top-level help: no arguments, or a help flag as the first argument.
+if (args.Length == 0
+    || string.Equals(args[0], "--help", StringComparison.OrdinalIgnoreCase)
+    || string.Equals(args[0], "-h", StringComparison.OrdinalIgnoreCase)
+    || string.Equals(args[0], "-?", StringComparison.Ordinal))
+{
+    Console.WriteLine(Help);
+    return 0;
+}
 
 if (args.Length > 0 && (string.Equals(args[0], "--version", StringComparison.OrdinalIgnoreCase)
     || string.Equals(args[0], "-v", StringComparison.OrdinalIgnoreCase)))
