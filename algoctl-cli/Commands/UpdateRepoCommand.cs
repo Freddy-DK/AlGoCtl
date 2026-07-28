@@ -4,7 +4,7 @@ namespace AlGoCtl;
 /// <c>updaterepo</c> — copies the AL-Go system-file update workflow from a
 /// template repository into an existing repository and triggers that workflow.
 /// </summary>
-internal static class UpdateRepoCommand
+internal sealed class UpdateRepoCommand : WorkflowCommandBase
 {
     public const string Name = "updaterepo";
 
@@ -216,24 +216,15 @@ internal static class UpdateRepoCommand
 
             // 5. Trigger the workflow in the target repository.
             Console.WriteLine($"Running workflow {WorkflowFileName} in {target.Owner}/{target.Name}...");
-            var runEnv = new Dictionary<string, string>
+            var updateInputs = new KeyValuePair<string, string>[]
             {
-                ["GH_TOKEN"] = targetToken,
-                ["GH_HOST"] = target.Host,
+                new("templateUrl", template.HttpsUrl),
+                new("downloadLatest", "true"),
+                new("directCommit", "true"),
+                new("includeBranches", branches),
             };
-            var (runExit, _, runErr) = ProcessHelper.Run(
-                "gh",
-                ["workflow", "run", WorkflowFileName, "--repo", $"{target.Owner}/{target.Name}",
-                 "-f", $"templateUrl={template.HttpsUrl}",
-                 "-f", "downloadLatest=true",
-                 "-f", "directCommit=true",
-                 "-f", $"includeBranches={branches}"],
-                environment: runEnv);
-            if (runExit != 0)
-            {
-                Console.Error.WriteLine($"Error: failed to run workflow:{Environment.NewLine}{RepoCommandHelpers.Mask(runErr, targetToken)}");
+            if (!RunWorkflow(target, targetToken, WorkflowFileName, branch: null, updateInputs))
                 return 1;
-            }
 
             Console.WriteLine();
             Console.WriteLine($"Repository updated and workflow triggered: {target.HttpsUrl}");

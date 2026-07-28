@@ -91,6 +91,31 @@ Copies the AL-Go system-file update workflow (`.github/workflows/UpdateGitHubGoS
 algoctl updaterepo --repo myorg/my-al-app --ghuser myuser --branches "main,release/*"
 ```
 
+### createrelease
+
+Runs the AL-Go `CreateRelease.yaml` workflow in an existing repository to promote a build to a GitHub release. The workflow is triggered on the branch selected with `--branch` (the repository's default branch when omitted).
+
+| Option | Required | Description |
+| --- | --- | --- |
+| `--repo <owner/repo\|url>` | Yes | The repository to create the release in. Short form defaults to github.com. |
+| `--ghuser <user>` | No | GitHub CLI account used to run the workflow. Default: active account on the target host. |
+| `--branch <branch>` | No | Branch (ref) to run the workflow on. Default: the repository's default branch. |
+| `--name <name>` | Yes | Name of this release. |
+| `--tag <tag>` | Yes | Tag of this release; must be a semantic version string (e.g. `1.0.0`). A pattern ending in `*` (e.g. `1.0.*`) resolves to the latest matching tag with its patch incremented, or the first one (e.g. `1.0.0`) when none exist. |
+| `--buildversion <version>` | No | Build version to promote to release. Default: `latest`. |
+| `--releasetype <Release\|Prerelease\|Draft>` | No | Release, prerelease or draft? Default: `Release`. |
+| `--createreleasebranch` | No | Create a release branch. Default: `false`. |
+| `--releasebranchprefix <prefix>` | No | Prefix for the release branch. Used only if `--createreleasebranch` is set. Default: `release/`. |
+| `--updateversionnumber <version>` | No | New version number in the main branch. Use `Major.Minor` (optionally add `.Build` for versioning strategy 3) for an absolute change, or `+1`, `+0.1` (or `+0.0.1` for versioning strategy 3) for an incremental change. Default: none. |
+| `--skipupdatingdependencies` | No | Skip updating dependency version numbers in all apps. Default: `false`. |
+| `--directcommit` | No | Direct commit? Default: `false`. |
+| `--useghtokenworkflow` | No | Use GhTokenWorkflow for PR/commit? Default: `false`. |
+| `--confirm` | No | Skip the interactive confirmation prompt. |
+
+```pwsh
+algoctl createrelease --repo myorg/my-al-app --ghuser myuser --name "Version 1.0.0" --tag 1.0.0
+```
+
 ## License
 
 Licensed under the [MIT License](https://github.com/Freddy-DK/AlGoCtl).

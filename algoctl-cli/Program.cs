@@ -10,6 +10,7 @@ Usage:
 Commands:
     createrepo       Create a new repository from a template repository
     updaterepo       Update an existing repository's AL-Go system-file workflow and run it
+    createrelease    Run the AL-Go CreateRelease workflow to create a release
     --version, -v    Show the algoctl version
     --help, -h       Show this help
 
@@ -52,6 +53,11 @@ if (args.Length > 0 && string.Equals(args[0], CreateRepoCommand.Name, StringComp
 if (args.Length > 0 && string.Equals(args[0], UpdateRepoCommand.Name, StringComparison.OrdinalIgnoreCase))
 {
     return UpdateRepoCommand.Run(args);
+}
+
+if (args.Length > 0 && string.Equals(args[0], CreateReleaseCommand.Name, StringComparison.OrdinalIgnoreCase))
+{
+    return CreateReleaseCommand.Run(args);
 }
 
 Console.Error.WriteLine(Help);
