@@ -1,4 +1,4 @@
-namespace AlGoCtl;
+namespace ALGoCtl;
 
 /// <summary>
 /// Base class for commands that trigger a GitHub Actions workflow in a target

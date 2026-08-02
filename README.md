@@ -1,4 +1,4 @@
-# AlGoCtl
+# ALGoCtl
 
 Command-line client for controlling [AL-Go for GitHub](https://github.com/microsoft/AL-Go) repositories. It automates creating new repositories from a template and keeping an existing repository's AL-Go system files up to date, then triggers the relevant workflow for you.
 
@@ -14,7 +14,7 @@ This CLI will be used for additional [AL-Go for GitHub](https://github.com/micro
 2. Install the CLI from NuGet:
 
    ```pwsh
-   dotnet tool install --global AlGoCtl
+   dotnet tool install --global ALGoCtl
    ```
 
 3. Make sure the prerequisites below are available on your `PATH`.
@@ -22,7 +22,7 @@ This CLI will be used for additional [AL-Go for GitHub](https://github.com/micro
 To update to the latest version:
 
 ```pwsh
-dotnet tool update --global AlGoCtl
+dotnet tool update --global ALGoCtl
 ```
 
 ## Prerequisites
@@ -118,4 +118,4 @@ algoctl createrelease --repo myorg/my-al-app --ghuser myuser --name "Version 1.0
 
 ## License
 
-Licensed under the [MIT License](https://github.com/Freddy-DK/AlGoCtl).
+Licensed under the [MIT License](https://github.com/Freddy-DK/ALGoCtl).

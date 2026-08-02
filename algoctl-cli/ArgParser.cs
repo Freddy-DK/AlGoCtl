@@ -1,4 +1,4 @@
-namespace AlGoCtl;
+namespace ALGoCtl;
 
 /// <summary>
 /// Parses <c>--key value</c> / <c>--key=value</c> style arguments into a

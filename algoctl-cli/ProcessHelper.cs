@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using System.Text;
 
-namespace AlGoCtl;
+namespace ALGoCtl;
 
 /// <summary>
 /// Helper for running external processes (e.g. <c>gh</c> and <c>git</c>) and

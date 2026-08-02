@@ -7,13 +7,13 @@
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>algoctl</ToolCommandName>
     <AssemblyName>algoctl</AssemblyName>
-    <PackageId>AlGoCtl</PackageId>
+    <PackageId>ALGoCtl</PackageId>
     <Version>0.0.1</Version>
     <Authors>Freddy Kristiansen</Authors>
     <Description>CLI for controlling AL-Go for GitHub repositories</Description>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageProjectUrl>https://github.com/Freddy-DK/AlGoCtl</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/Freddy-DK/AlGoCtl</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/Freddy-DK/ALGoCtl</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Freddy-DK/ALGoCtl</RepositoryUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 

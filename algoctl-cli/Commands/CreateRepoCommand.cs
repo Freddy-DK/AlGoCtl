@@ -1,4 +1,4 @@
-namespace AlGoCtl;
+namespace ALGoCtl;
 
 /// <summary>
 /// <c>createrepo</c> — creates a new GitHub repository (via the GitHub CLI) and

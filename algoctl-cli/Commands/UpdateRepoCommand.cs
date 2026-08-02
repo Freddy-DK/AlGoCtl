@@ -1,4 +1,4 @@
-namespace AlGoCtl;
+namespace ALGoCtl;
 
 /// <summary>
 /// <c>updaterepo</c> — copies the AL-Go system-file update workflow from a

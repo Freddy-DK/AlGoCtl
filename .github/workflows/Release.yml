@@ -1,7 +1,7 @@
 # ============================================================================
-# Release – Create a versioned release of AlGoCtl
+# Release – Create a versioned release of ALGoCtl
 # ============================================================================
-# MUST be triggered from Freddy-DK/AlGoCtl@main. If triggered from another
+# MUST be triggered from Freddy-DK/ALGoCtl@main. If triggered from another
 # branch, it automatically re-dispatches itself on main with the correct
 # branch input derived from the current branch name.
 #
@@ -51,10 +51,10 @@ jobs:
     outputs:
       proceed: ${{ steps.check.outputs.proceed }}
     steps:
-      - name: Guard – must run on Freddy-DK/AlGoCtl
-        if: github.repository != 'Freddy-DK/AlGoCtl'
+      - name: Guard – must run on Freddy-DK/ALGoCtl
+        if: github.repository != 'Freddy-DK/ALGoCtl'
         run: |
-          echo "::error::This workflow must be triggered from Freddy-DK/AlGoCtl. Current: ${{ github.repository }}"
+          echo "::error::This workflow must be triggered from Freddy-DK/ALGoCtl. Current: ${{ github.repository }}"
           exit 1
 
       - name: Display ClientId8

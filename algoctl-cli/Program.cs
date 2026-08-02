@@ -1,5 +1,5 @@
 using System.Reflection;
-using AlGoCtl;
+using ALGoCtl;
 
 const string Help = """
 AL-Go for GitHub Control CLI

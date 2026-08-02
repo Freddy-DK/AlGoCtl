@@ -1,4 +1,4 @@
-namespace AlGoCtl;
+namespace ALGoCtl;
 
 /// <summary>
 /// <c>createrelease</c> — triggers the AL-Go <c>CreateRelease.yaml</c> workflow

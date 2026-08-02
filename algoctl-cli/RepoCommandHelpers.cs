@@ -1,4 +1,4 @@
-namespace AlGoCtl;
+namespace ALGoCtl;
 
 /// <summary>
 /// Shared helpers used by the repository commands (<c>createrepo</c>,
