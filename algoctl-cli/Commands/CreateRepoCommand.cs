@@ -182,6 +182,10 @@ internal static class CreateRepoCommand
             RepoCommandHelpers.ForceDeleteDirectory(gitDir);
 
             if (!RepoCommandHelpers.RunGit(tempDir, ["-c", "init.defaultBranch=main", "init"], targetToken)) return 1;
+
+            // Record the template this repository was created from (AL-Go setting).
+            if (!RepoCommandHelpers.SetTemplateUrl(tempDir, template.HttpsUrl)) return 1;
+
             if (!RepoCommandHelpers.RunGit(tempDir, ["add", "-A"], targetToken)) return 1;
             if (!RepoCommandHelpers.RunGit(tempDir,
                     ["-c", "user.name=algoctl", "-c", "user.email=algoctl@users.noreply.github.com",

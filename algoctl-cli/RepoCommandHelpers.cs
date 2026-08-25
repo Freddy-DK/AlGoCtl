@@ -1,3 +1,6 @@
+using System.Text.Json;
+using System.Text.Json.Nodes;
+
 namespace ALGoCtl;
 
 /// <summary>
@@ -6,6 +9,41 @@ namespace ALGoCtl;
 /// </summary>
 internal static class RepoCommandHelpers
 {
+    /// <summary>
+    /// Writes <paramref name="templateUrl"/> into <c>.github/AL-Go-Settings.json</c> under
+    /// <paramref name="repoRoot"/>, creating the file (and folder) if it does not exist.
+    /// </summary>
+    public static bool SetTemplateUrl(string repoRoot, string templateUrl)
+    {
+        var settingsPath = Path.Combine(repoRoot, ".github", "AL-Go-Settings.json");
+        try
+        {
+            JsonObject settings;
+            if (File.Exists(settingsPath))
+            {
+                var node = JsonNode.Parse(File.ReadAllText(settingsPath));
+                settings = node as JsonObject
+                    ?? throw new FormatException("AL-Go-Settings.json does not contain a JSON object.");
+            }
+            else
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(settingsPath)!);
+                settings = new JsonObject();
+            }
+
+            settings["templateUrl"] = templateUrl;
+
+            var options = new JsonSerializerOptions { WriteIndented = true };
+            File.WriteAllText(settingsPath, settings.ToJsonString(options));
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Error: failed to update AL-Go-Settings.json: {ex.Message}");
+            return false;
+        }
+    }
+
     /// <summary>Runs a git command in <paramref name="workingDirectory"/> and reports failures.</summary>
     public static bool RunGit(string workingDirectory, string[] arguments, string? tokenToMask)
     {
