@@ -133,6 +133,21 @@ Downloads a file from Azure Front Door (or any HTTP server) using parallel byte-
 algoctl downloadfile --url https://example.com/artifact.zip --path C:\temp\artifact --unzip
 ```
 
+### downloadartifacts
+
+Downloads Business Central artifacts into a local cache using the same folder structure as BcContainerHelper's `Download-Artifacts` (`<basePath>\<type>\<version>\<country>` and `<basePath>\<type>\<version>\platform`). Existing artifacts are reused unless `--force` is set. Downloads use the same parallel streaming as `downloadfile`.
+
+| Option | Required | Description |
+| --- | --- | --- |
+| `--artifactUrl <url>` | Yes | URL of the artifact to download. |
+| `--includePlatform` | No | Also download the platform artifact. |
+| `--force` | No | Download even if the artifact folder exists (the existing folder is removed first). |
+| `--basePath <path>` | No | Root folder of the artifact cache. Default: `c:\bcartifacts.cache` (on Linux/macOS: `~/.bcartifacts.cache`). |
+
+```pwsh
+algoctl downloadartifacts --artifactUrl https://bcartifacts-exdbf9fwegejdqak.b02.azurefd.net/sandbox/29.0.54011.57417/dk --includePlatform
+```
+
 ## License
 
 Licensed under the [MIT License](https://github.com/Freddy-DK/ALGoCtl).

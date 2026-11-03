@@ -95,7 +95,7 @@ internal sealed class DownloadFileCommand
         return false;
     }
 
-    private static async Task<int> DownloadAsync(string url, string path, int maxThreads, int stallSeconds, int maxAttempts, bool unzip)
+    internal static async Task<int> DownloadAsync(string url, string path, int maxThreads = 16, int stallSeconds = 60, int maxAttempts = 4, bool unzip = false)
     {
         // With --unzip, --path is the extract directory; the download lands in a temp file.
         var dlPath = unzip
@@ -156,7 +156,7 @@ internal sealed class DownloadFileCommand
                     : maxThreads;
 
         Console.WriteLine("Downloading file:");
-        Console.WriteLine($"  URL:                     {url}");
+        Console.WriteLine($"  URL:                     {url.Split('?')[0]}");
         Console.WriteLine($"  Size:                    {(size.HasValue ? $"{size:N0} bytes" : "unknown")}");
         Console.WriteLine($"  X-Cache:                 {(xCache.Length > 0 ? xCache : "n/a")}");
         Console.WriteLine($"  Streams:                 {streams}");
