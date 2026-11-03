@@ -116,6 +116,23 @@ Runs the AL-Go `CreateRelease.yaml` workflow in an existing repository to promot
 algoctl createrelease --repo myorg/my-al-app --ghuser myuser --name "Version 1.0.0" --tag 1.0.0
 ```
 
+### downloadfile
+
+Downloads a file from Azure Front Door (or any HTTP server) using parallel byte-range streams. A `HEAD` request determines size, range support and cache state: a local cache hit (`X-Cache: TCP_HIT`) uses at most 2 streams, otherwise up to `--maxthreads` streams are used. Each stream retries and aborts a connection that stalls.
+
+| Option | Required | Description |
+| --- | --- | --- |
+| `--url <url>` | Yes | URL of the file to download. |
+| `--path <dest>` | Yes | Destination file, or the destination directory when `--unzip` is set. |
+| `--maxthreads <n>` | No | Parallel streams on a cache miss. Default: `16`. |
+| `--stallseconds <n>` | No | Abort a stream idle this long. Default: `60`. |
+| `--maxattempts <n>` | No | Retries per chunk. Default: `4`. |
+| `--unzip` | No | Extract the download into `--path` (a directory) instead of writing the file. |
+
+```pwsh
+algoctl downloadfile --url https://example.com/artifact.zip --path C:\temp\artifact --unzip
+```
+
 ## License
 
 Licensed under the [MIT License](https://github.com/Freddy-DK/ALGoCtl).

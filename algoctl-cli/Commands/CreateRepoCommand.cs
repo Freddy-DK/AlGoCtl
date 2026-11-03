@@ -18,7 +18,7 @@ internal static class CreateRepoCommand
             --templaterepo <owner/repo|url>   Template repository to copy content from.
                                               Short form (owner/repo) defaults to github.com;
                                               a full URL may target a GitHub Enterprise host.
-                                              Default: https://github.com/Freddy-DK/AL-Go-PTE
+                                              Default: https://github.com/microsoft/AL-Go-PTE@preview
             --templateghuser <user>           GitHub CLI account to use for reading the
                                               template repository. Default: the active account
                                               on the template host, or unauthenticated if none.
@@ -57,10 +57,10 @@ internal static class CreateRepoCommand
         // --ghuser (optional) — defaults to the active account on the target host.
         parameters.TryGetValue("ghuser", out var ghUser);
 
-        // --templaterepo (default: Freddy-DK/AL-Go-PTE on github.com)
+        // --templaterepo (default: microsoft/AL-Go-PTE@preview on github.com)
         var templateInput = parameters.TryGetValue("templaterepo", out var t) && !string.IsNullOrWhiteSpace(t)
             ? t
-            : "https://github.com/Freddy-DK/AL-Go-PTE";
+            : "https://github.com/microsoft/AL-Go-PTE@preview";
 
         // --templateghuser (optional)
         parameters.TryGetValue("templateghuser", out var templateGhUser);
