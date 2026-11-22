@@ -129,7 +129,7 @@ internal static class CreateRepoCommand
         var templateLogin = templateToken is null ? null : (RepoCommandHelpers.ResolveLogin(template.Host, templateToken) ?? templateGhUser);
 
         Console.WriteLine("Creating repository from template:");
-        Console.WriteLine($"  Template:      {template.HttpsUrl}");
+        Console.WriteLine($"  Template:      {template.DisplayUrl}");
         Console.WriteLine($"  Template auth: {(string.IsNullOrWhiteSpace(templateLogin) ? "(unauthenticated)" : $"{templateLogin} on {template.Host}")}");
         Console.WriteLine($"  New repo:      {target.HttpsUrl}");
         Console.WriteLine($"  Visibility:    {visibility}");
@@ -170,7 +170,7 @@ internal static class CreateRepoCommand
                 : template.AuthenticatedUrl(templateToken);
             var (cloneExit, _, cloneErr) = ProcessHelper.Run(
                 "git",
-                ["clone", "--depth", "1", templateCloneUrl, tempDir]);
+                template.ShallowCloneArgs(templateCloneUrl, tempDir));
             if (cloneExit != 0)
             {
                 Console.Error.WriteLine($"Error: failed to clone template:{Environment.NewLine}{RepoCommandHelpers.Mask(cloneErr, templateToken)}");

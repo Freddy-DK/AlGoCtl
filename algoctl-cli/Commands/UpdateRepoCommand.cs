@@ -130,7 +130,7 @@ internal sealed class UpdateRepoCommand : WorkflowCommandBase
         var templateLogin = templateToken is null ? null : (RepoCommandHelpers.ResolveLogin(template.Host, templateToken) ?? templateGhUser);
 
         Console.WriteLine("Updating repository with AL-Go from template:");
-        Console.WriteLine($"  Template:      {template.HttpsUrl}");
+        Console.WriteLine($"  Template:      {template.DisplayUrl}");
         Console.WriteLine($"  Template auth: {(string.IsNullOrWhiteSpace(templateLogin) ? "(unauthenticated)" : $"{templateLogin} on {template.Host}")}");
         Console.WriteLine($"  Repository:    {target.HttpsUrl}");
         Console.WriteLine($"  Workflow:      {WorkflowRelativePath}");
@@ -156,7 +156,7 @@ internal sealed class UpdateRepoCommand : WorkflowCommandBase
                 : template.AuthenticatedUrl(templateToken);
             var (tmplExit, _, tmplErr) = ProcessHelper.Run(
                 "git",
-                ["clone", "--depth", "1", templateCloneUrl, templateDir]);
+                template.ShallowCloneArgs(templateCloneUrl, templateDir));
             if (tmplExit != 0)
             {
                 Console.Error.WriteLine($"Error: failed to clone template:{Environment.NewLine}{RepoCommandHelpers.Mask(tmplErr, templateToken)}");
