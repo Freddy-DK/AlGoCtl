@@ -12,8 +12,8 @@ internal sealed record RepoSpec(string Host, string Owner, string Name, string? 
 
     public string HttpsUrl => $"https://{Host}/{Owner}/{Name}";
 
-    /// <summary>Display form including the <c>@branch</c> suffix when one was specified.</summary>
-    public string DisplayUrl => Branch is null ? HttpsUrl : $"{HttpsUrl}@{Branch}";
+    /// <summary>URL including the <c>@branch</c> suffix when one was specified (AL-Go templateUrl format).</summary>
+    public string UrlWithBranch => Branch is null ? HttpsUrl : $"{HttpsUrl}@{Branch}";
 
     /// <summary>Arguments for a shallow <c>git clone</c> of this repository (honoring <see cref="Branch"/>).</summary>
     public string[] ShallowCloneArgs(string url, string directory) => Branch is null

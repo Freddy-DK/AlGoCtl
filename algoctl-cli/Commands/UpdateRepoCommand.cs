@@ -130,7 +130,7 @@ internal sealed class UpdateRepoCommand : WorkflowCommandBase
         var templateLogin = templateToken is null ? null : (RepoCommandHelpers.ResolveLogin(template.Host, templateToken) ?? templateGhUser);
 
         Console.WriteLine("Updating repository with AL-Go from template:");
-        Console.WriteLine($"  Template:      {template.DisplayUrl}");
+        Console.WriteLine($"  Template:      {template.UrlWithBranch}");
         Console.WriteLine($"  Template auth: {(string.IsNullOrWhiteSpace(templateLogin) ? "(unauthenticated)" : $"{templateLogin} on {template.Host}")}");
         Console.WriteLine($"  Repository:    {target.HttpsUrl}");
         Console.WriteLine($"  Workflow:      {WorkflowRelativePath}");
@@ -218,7 +218,7 @@ internal sealed class UpdateRepoCommand : WorkflowCommandBase
             Console.WriteLine($"Running workflow {WorkflowFileName} in {target.Owner}/{target.Name}...");
             var updateInputs = new KeyValuePair<string, string>[]
             {
-                new("templateUrl", template.HttpsUrl),
+                new("templateUrl", template.UrlWithBranch),
                 new("downloadLatest", "true"),
                 new("directCommit", "true"),
                 new("includeBranches", branches),

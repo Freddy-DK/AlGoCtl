@@ -129,7 +129,7 @@ internal static class CreateRepoCommand
         var templateLogin = templateToken is null ? null : (RepoCommandHelpers.ResolveLogin(template.Host, templateToken) ?? templateGhUser);
 
         Console.WriteLine("Creating repository from template:");
-        Console.WriteLine($"  Template:      {template.DisplayUrl}");
+        Console.WriteLine($"  Template:      {template.UrlWithBranch}");
         Console.WriteLine($"  Template auth: {(string.IsNullOrWhiteSpace(templateLogin) ? "(unauthenticated)" : $"{templateLogin} on {template.Host}")}");
         Console.WriteLine($"  New repo:      {target.HttpsUrl}");
         Console.WriteLine($"  Visibility:    {visibility}");
@@ -184,7 +184,7 @@ internal static class CreateRepoCommand
             if (!RepoCommandHelpers.RunGit(tempDir, ["-c", "init.defaultBranch=main", "init"], targetToken)) return 1;
 
             // Record the template this repository was created from (AL-Go setting).
-            if (!RepoCommandHelpers.SetTemplateUrl(tempDir, template.HttpsUrl)) return 1;
+            if (!RepoCommandHelpers.SetTemplateUrl(tempDir, template.UrlWithBranch)) return 1;
 
             if (!RepoCommandHelpers.RunGit(tempDir, ["add", "-A"], targetToken)) return 1;
             if (!RepoCommandHelpers.RunGit(tempDir,
